@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+{% load define %}
+{% load user_follows %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ page_title }}</title>
+    <link rel="stylesheet" href="{% static './pages/index.css' %}">
+</head>
+<body class="body">
+{% include "header.html" %}
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">{{ page_title }}</h1>
+            <ul class="tags">
+                {% for tag in all_tags %}
+                    <li class="tags__item">
+                        {% get_tag tag.name request.GET.urlencode as tagged %}
+                        <a id="{{ tag.name }}" class="tags__checkbox tags__checkbox_style_{{ tag.badge_color }}
+                        {% if tagged == 1 %} tags__checkbox_active {% endif %}"
+                           href="{{ request.path }}?{% change_tag tag.name request.GET.urlencode %}"></a>
+                        <label class="tags__label">{{ tag.name }}</label>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        {% if request.user.is_authenticated %}
+            {% if by_author != None %}
+                {% user_follows request.user as follows %}
+                {% if by_author in follows %}
+                    {% define "Отписаться от автора" as subscribe_text %}
+                    {% define "" as subscribe_data_out %}
+                {% else %}
+                    {% define "Подписаться на автора" as subscribe_text %}
+                    {% define "data-out" as subscribe_data_out %}
+                {% endif %}
+                <div class="author-subscribe" data-author="{{ by_author }}">
+                    <p style="padding: 0 0 2em 0;">
+                        <button class="button button_style_light-blue button_size_subscribe"
+                                name="subscribe" {{ subscribe_data_out }}>{{ subscribe_text }}
+                        </button>
+                    </p>
+                </div>
+            {% else %}
+                {% define "" as subscribe_load_js %}
+            {% endif %}
+        {% endif %}
+        <div class="card-list">
+            {% for recipe in page %}
+                {% include "recipe_card.html" with recipe=recipe %}
+            {% endfor %}
+        </div>
+
+        {% include "pagination.html" with page=page paginator=paginator  %}
+
+    </main>
+    {% include "footer.html" %}
+  <script src="{% static './js/components/MainCards.js' %}"></script>
+
+  <script src="{% static './js/components/Purchases.js' %}"></script>
+  <script src="{% static './js/components/Favorites.js' %}"></script>
+  {% if by_author != None %}
+      <script src="{% static './js/components/Subscribe.js' %}"></script>
+  {% endif %}
+
+  <script src="{% static './js/config/config.js' %}"></script>
+  {% if by_author != None %}
+      <script src="{% static './js/components/AuthorRecipe.js' %}"></script>
+  {% else %}
+      <script src="{% static './js/components/CardList.js' %}"></script>
+  {% endif %}
+  <script src="{% static './js/components/Header.js' %}"></script>
+
+  <script src="{% static './js/api/Api.js' %}"></script>
+  {% if by_author != None %}
+      <script src="{% static 'authorRecipe.js' %}"></script>
+  {% else %}
+      <script src="{% static 'indexAuth.js' %}"></script>
+  {% endif %}
+</body>
+</html>

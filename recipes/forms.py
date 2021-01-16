@@ -34,7 +34,7 @@ class SignInForm(AuthenticationForm):
     def clean_username(self):
         try:
             self.fields['username'].clean(self.data['username'])
-        except:
+        except ValidationError:
             username_or_email = self.cleaned_data.get('username')
             try:
                 validate_email(username_or_email)

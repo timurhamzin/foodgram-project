@@ -18,14 +18,14 @@ services:
     env_file:
       - .env
     volumes:
-      - ./staticfiles:/foodgram/staticfiles/
+      - ./static_root:/foodgram/static_root/
       - ./media:/foodgram/media/
     command: gunicorn recipes.wsgi:application --bind 0.0.0.0:8000
   nginx:
     image: nginx:1.19.3
     volumes:
       - ./nginx_default.conf:/etc/nginx/conf.d/default.conf
-      - ./staticfiles:/foodgram/staticfiles/
+      - ./static_root:/foodgram/static_root/
       - ./media:/foodgram/media/
     ports:
       - 80:80

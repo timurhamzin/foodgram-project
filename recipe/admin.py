@@ -1,19 +1,11 @@
 from django.contrib import admin
 from django.apps import apps
-from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin
 
 from recipe.models import RecipeIngridient, Recipe, Ingridient
-
-User = get_user_model()
 
 
 class RecipeIngridientInline(admin.StackedInline):
     model = RecipeIngridient
-
-
-class MyUserAdmin(UserAdmin):
-    list_filter = UserAdmin.list_filter + ('email', 'username',)
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -44,8 +36,6 @@ def register_models():
             pass
 
 
-admin.site.unregister(User)
-admin.site.register(User, MyUserAdmin)
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingridient, IngredientAdmin)
 register_models()

@@ -23,22 +23,18 @@ def register(request):
 
 
 def auth(request):
-    errors = {}
-    if request.method == 'POST':
-        form = SignInForm(data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=raw_password)
-            if user:
-                login(request, user)
-                return redirect(reverse('index'))
-            else:
-                errors = {'__all__': ['User and password didn\'t match']}
+    form = SignInForm(data=request.POST or None)
+    if form.is_valid():
+        username = form.cleaned_data.get('username')
+        raw_password = form.cleaned_data.get('password')
+        user = authenticate(username=username, password=raw_password)
+        if user:
+            login(request, user)
+            return redirect(reverse('index'))
         else:
-            errors = form.errors
+            errors = {'__all__': ['User and password didn\'t match']}
     else:
-        form = SignInForm()
+        errors = form.errors
     return render(request, 'authForm.html',
                   {'form': form, 'errors': errors})
 

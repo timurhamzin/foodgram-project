@@ -12,7 +12,7 @@ class Command(BaseCommand):
     help = 'Imports ingredients to the DB'
 
     def handle(self, *args, **options):
-        with open(os.path.join(BASE_DIR, 'ingredients.json')) as f:
+        with open(os.path.join(BASE_DIR, 'fixtures', 'ingredients.json')) as f:
             ingredients = json.load(f)
             for ingredient in ingredients:
                 ingredient_obj = Ingridient(

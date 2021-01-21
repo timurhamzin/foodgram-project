@@ -19,6 +19,4 @@ RUN chmod +x entrypoint.sh
 
 RUN flake8 --ignore=E501,F401,F541,F403,F405 --exclude=venv .
 
-# CMD gunicorn api_yamdb.wsgi:application --bind 0.0.0.0:8000
-
 ENTRYPOINT ["/foodgram/entrypoint.sh"]

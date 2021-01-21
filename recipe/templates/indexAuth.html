@@ -1,18 +1,14 @@
-<!doctype html>
-<html lang="en">
+{% extends "base.html" %}
+
 {% load static %}
-{% load define %}
-{% load user_follows %}
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{ page_title }}</title>
-    <link rel="stylesheet" href="{% static './pages/index.css' %}">
-</head>
-<body class="body">
-{% include "header.html" %}
+
+{% block head %}
+    {% with css_file="index" %}
+        {{ block.super }}
+    {% endwith%}
+{% endblock %}
+
+{% block main %}
     <main class="main container">
         <div class="main__header">
             <h1 class="main__title">{{ page_title }}</h1>
@@ -51,35 +47,33 @@
         {% endif %}
         <div class="card-list">
             {% for recipe in page %}
-                {% include "recipe_card.html" with recipe=recipe %}
+                {% include "includes/recipe_card.html" with recipe=recipe %}
             {% endfor %}
         </div>
 
-        {% include "pagination.html" with page=page paginator=paginator  %}
+        {% include "includes/pagination.html" with page=page paginator=paginator  %}
 
     </main>
-    {% include "footer.html" %}
-  <script src="{% static './js/components/MainCards.js' %}"></script>
+{% endblock %}
 
-  <script src="{% static './js/components/Purchases.js' %}"></script>
-  <script src="{% static './js/components/Favorites.js' %}"></script>
-  {% if by_author != None %}
+{% block specific_js_imports %}
+    <script src="{% static './js/components/MainCards.js' %}"></script>
+    <script src="{% static './js/components/Purchases.js' %}"></script>
+    <script src="{% static './js/components/Favorites.js' %}"></script>
+
+    {% if by_author != None %}
       <script src="{% static './js/components/Subscribe.js' %}"></script>
-  {% endif %}
+    {% endif %}
 
-  <script src="{% static './js/config/config.js' %}"></script>
-  {% if by_author != None %}
+    {% if by_author != None %}
       <script src="{% static './js/components/AuthorRecipe.js' %}"></script>
-  {% else %}
+    {% else %}
       <script src="{% static './js/components/CardList.js' %}"></script>
-  {% endif %}
-  <script src="{% static './js/components/Header.js' %}"></script>
+    {% endif %}
 
-  <script src="{% static './js/api/Api.js' %}"></script>
-  {% if by_author != None %}
+    {% if by_author != None %}
       <script src="{% static 'authorRecipe.js' %}"></script>
-  {% else %}
+    {% else %}
       <script src="{% static 'indexAuth.js' %}"></script>
-  {% endif %}
-</body>
-</html>
+    {% endif %}
+{% endblock %}

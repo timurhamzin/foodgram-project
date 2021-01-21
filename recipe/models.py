@@ -9,44 +9,47 @@ User = get_user_model()
 
 
 class Recipe(models.Model):
-    id = models.AutoField(primary_key=True)
-    image_upload_to = 'recipe_images'
     author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='recipes')
-    title = models.CharField(max_length=200)
+        User, on_delete=models.CASCADE, related_name='recipes',
+        verbose_name='Автор')
+    title = models.CharField(max_length=200, verbose_name='Название')
     image = models.ImageField(
-        upload_to=image_upload_to,
-        blank=True,
-        null=True)
-    description = models.TextField()
+        upload_to='recipe_images', blank=True, null=True,
+        verbose_name='Внешний вид')
+    description = models.TextField(verbose_name='Описание')
     ingridients = models.ManyToManyField(
-        'Ingridient', through='RecipeIngridient', related_name='recipes')
-    tag = models.ManyToManyField('Tag', blank=False)
-    cooking_time = models.PositiveSmallIntegerField(null=False, blank=True, default=0)
-    pub_date = models.DateTimeField('date published', auto_now_add=True)
+        'Ingridient', through='RecipeIngridient', related_name='recipes',
+        verbose_name='Ингридиенты'
+    )
+    tag = models.ManyToManyField('Tag', blank=False, verbose_name='Тэг')
+    cooking_time = models.PositiveSmallIntegerField(
+        null=False, blank=True, default=0, verbose_name='Время приготовления')
+    pub_date = models.DateTimeField(
+        auto_now_add=True, verbose_name='Дата публикации')
     purchased_by = models.ManyToManyField(
         User, blank=True, related_name='purchased_recipes',
-        through='ShoppingCart')
-    favorite_count = models.PositiveIntegerField(default=0)
+        through='ShoppingCart', verbose_name='Покупатели')
+    favorite_count = models.PositiveIntegerField(
+        default=0, verbose_name='Добавлено в избранное (раз)')
+
+    class Meta:
+        ordering = ('-pub_date',)
+        verbose_name = 'Рецепт'
+        verbose_name_plural = 'Рецепты'
 
     def __str__(self):
         return self.title
-
-    def image_tag(self):
-        return mark_safe(f'<img src="{settings.MEDIA_URL}'
-                         f'{self.image}" height="30"/>')
-
-    image_tag.short_description = 'Image'
 
     @property
     def image_url(self):
         if self.image and hasattr(self.image, 'url'):
             return self.image.url
 
-    class Meta:
-        ordering = ('-pub_date',)
+    def image_tag(self):
+        return mark_safe(f'<img src="{settings.MEDIA_URL}'
+                         f'{self.image}" height="30"/>')
+
+    image_tag.short_description = 'Image'
 
 
 class Ingridient(models.Model):
@@ -57,35 +60,48 @@ class Ingridient(models.Model):
     )
     part = models.ManyToManyField(Recipe, through='RecipeIngridient')
 
+    class Meta:
+        verbose_name = 'Ингридиент'
+        verbose_name_plural = 'Ингридиенты'
+
     def __str__(self):
         return self.title
 
 
 class RecipeIngridient(models.Model):
     ingridient = models.ForeignKey(
-        Ingridient,
-        on_delete=models.CASCADE,
-        related_name='recipe_ingridients'
+        Ingridient, on_delete=models.CASCADE, related_name='recipe_ingridients',
+        verbose_name='Ингридиент'
     )
     recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
+        Recipe, on_delete=models.CASCADE, verbose_name='Рецепт'
     )
-    amount = models.PositiveSmallIntegerField()
+    amount = models.PositiveSmallIntegerField(verbose_name='Количество')
+
+    class Meta:
+        verbose_name = 'Ингридиент'
+        verbose_name_plural = 'Ингридиенты'
 
 
 class Tag(models.Model):
-    name = models.CharField(max_length=10)
-    badge_colors = (
-        ('orange', 'orange'),
-        ('green', 'green'),
-        ('purple', 'purple'),
-    )
+    name = models.CharField(max_length=10, verbose_name='Имя тэга')
+    ORANGE = 'orange'
+    GREEN = 'green'
+    PURPLE = 'purple'
+    COLOR_CHOICES = [
+        (ORANGE, 'orange'),
+        (GREEN, 'green'),
+        (PURPLE, 'purple'),
+    ]
+
     badge_color = models.CharField(
-        max_length=32,
-        choices=badge_colors,
-        default='orange',
+        max_length=32, choices=COLOR_CHOICES, default=ORANGE,
+        verbose_name='Цвет ярлыка'
     )
+
+    class Meta:
+        verbose_name = 'Тэг'
+        verbose_name_plural = 'Тэги'
 
     def __str__(self):
         return self.name
@@ -93,16 +109,21 @@ class Tag(models.Model):
 
 class FollowRecipe(models.Model):
     user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follow_recipes')
+        User, on_delete=models.CASCADE, related_name='follow_recipes',
+        verbose_name='Пользователь'
+    )
     recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='follow_recipes')
+        Recipe, on_delete=models.CASCADE, related_name='follow_recipes',
+        verbose_name='Рецепт'
+    )
 
     class Meta:
-        unique_together = ['user', 'recipe']
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'],
+                                    name='user_n_recipe_fav_unique')
+        ]
+        verbose_name = 'Избранное'
+        verbose_name_plural = 'Избранные'
 
     def __str__(self):
         return f'User {self.user} follows recipe {self.recipe}'
@@ -110,16 +131,21 @@ class FollowRecipe(models.Model):
 
 class FollowUser(models.Model):
     user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='follows')
+        User, on_delete=models.CASCADE, related_name='follows',
+        verbose_name='Подписчик'
+    )
     author = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='followed_by')
+        User, on_delete=models.CASCADE, related_name='followed_by',
+        verbose_name='Автор'
+    )
 
     class Meta:
-        unique_together = ['user', 'author']
+        verbose_name = 'Подписка'
+        verbose_name_plural = 'Подписки'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'author'],
+                                    name='user_n_author_follow_unique')
+        ]
 
     def __str__(self):
         return f'User {self.user} follows author {self.author}'
@@ -127,11 +153,20 @@ class FollowUser(models.Model):
 
 class ShoppingCart(models.Model):
     user = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name='purchased')
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+        User, on_delete=models.CASCADE, related_name='purchased',
+        verbose_name='Пользователь'
+    )
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, verbose_name='Рецепт'
+    )
 
     class Meta:
-        unique_together = ['user', 'recipe']
+        verbose_name = 'Покупка'
+        verbose_name_plural = 'Покупки'
+        constraints = [
+            models.UniqueConstraint(fields=['user', 'recipe'],
+                                    name='user_n_recipe_cart_unique')
+        ]
 
     def __str__(self):
         return f'User {self.user} added {self.recipe} to their shopping cart'

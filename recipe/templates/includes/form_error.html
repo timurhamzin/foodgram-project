@@ -1,0 +1,5 @@
+{% dict_get errors key as err %}
+{% define err|join:', ' as err %}
+{% if err %}
+    <span class="form__error">{{ err }}</span>
+{% endif %}

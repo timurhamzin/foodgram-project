@@ -26,12 +26,9 @@ class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngridientInline,)
     exclude = ('ingridients',)
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-
 
 # automatically register classes
-class ListAdminMixin(object):
+class ListAdminMixin:
     def __init__(self, model, admin_site):
         self.list_display = [field.name for field in model._meta.fields]
         super(ListAdminMixin, self).__init__(model, admin_site)

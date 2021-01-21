@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+{% load static %}
+{% load user_title %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ title }}</title>
+    <link rel="stylesheet" href="{% static './pages/single.css' %}">
+</head>
+<body class="body">
+{% include "includes/header.html" with recipe=recipe %}
+<main class="main container">
+    <div class="single-card__header-info">
+        <h1 class="single-card__title">{{ title }}</h1>
+    </div>
+    <div class="single-card__section">
+        <p class=" single-card__section-text">
+        {% autoescape off %}
+            {{ text }}
+        {% endautoescape %}
+        </p>
+    </div>
+</main>
+{% include "includes/footer.html" %}
+<script src="{% static './js/config/config.js' %}"></script>
+<script src="{% static './js/components/Header.js' %}"></script>
+</body>
+</html>

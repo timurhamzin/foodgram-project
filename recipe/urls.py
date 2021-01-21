@@ -3,8 +3,6 @@ from django.conf.urls.static import static
 from django.urls import path
 
 from . import views
-from .views import FollowRecipeView, FollowUserView
-
 
 urlpatterns = [
     path('', views.index, name='index'),
@@ -16,10 +14,12 @@ urlpatterns = [
     path('shopping_cart/', views.shopping_cart, name='shopping_cart'),
     path('purchases/', views.ShoppingCartView.as_view()),
     path('purchases/<int:followed_id>/', views.ShoppingCartView.as_view()),
-    path('subscriptions/', FollowUserView.as_view()),
-    path('subscriptions/<int:followed_id>/', FollowUserView.as_view()),
+    path('subscriptions/', views.FollowUserView.as_view()),
+    path('subscriptions/<int:followed_id>/', views.FollowUserView.as_view()),
     path('my_followed/', views.my_followed, name='my_followed'),
     path('author/<int:author_id>/', views.author, name='author'),
-    path('favorites/', FollowRecipeView.as_view()),
-    path('favorites/<int:followed_id>/', FollowRecipeView.as_view()),
+    path('favorites/', views.FollowRecipeView.as_view()),
+    path('favorites/<int:followed_id>/', views.FollowRecipeView.as_view()),
+    path('about/', views.FlatPageAbout.as_view(), name='about'),
+    path('technology/', views.FlatPageTechnology.as_view(), name='technology'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

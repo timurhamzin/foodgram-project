@@ -1,53 +1,46 @@
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect, render
-from django.urls import reverse
-
-from recipes.forms import SignUpForm, SignInForm
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
+from django.shortcuts import render
+from django.views.generic import TemplateView
 
 
-def register(request):
-    if request.method == 'POST':
-        form = SignUpForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect(reverse('index'))
-    else:
-        form = UserCreationForm()
-    return render(request, 'reg.html', {'form': form, 'errors': form.errors})
+class FlatPage404(TemplateView):
+    template_name = 'recipe/flatpages/title_and_text.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Страница не найдена'
+        context['text'] = '''
+            Такой страницы нет. Я за неё.<br>
+        '''
+        return context
 
 
-def auth(request):
-    errors = {}
-    if request.method == 'POST':
-        form = SignInForm(data=request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password')
-            user = authenticate(username=username, password=raw_password)
-            if user:
-                login(request, user)
-                return redirect(reverse('index'))
-            else:
-                errors = {'__all__': ['User and password didn\'t match']}
-        else:
-            errors = form.errors
-    else:
-        form = SignInForm()
-    return render(request, 'authForm.html',
-                  {'form': form, 'errors': errors})
+class FlatPage500(TemplateView):
+    template_name = 'recipe/flatpages/title_and_text.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Ошибка сервера'
+        context['text'] = '''
+            Что-то пошло не так. Напишите мне, контакты по ссылке "Об авторе".
+        '''
+        return context
 
 
-@login_required
-def signout(request):
-    logout(request)
-    return redirect(reverse('index'))
+def handler404(
+        request, exception, template_name="flatpages/title_and_text.html"):
+    context = {
+        'title': 'Страница не найдена (ошибка 404)',
+        'text': '''
+        Такой страницы нет. Я за неё.<br>'''
+    }
+    return render(request, template_name, context=context, status=404)
 
 
-def password_change_done(request):
-    return redirect(reverse('index'))
+def handler500(request, *args, **argv):
+    context = {
+        'title': 'Ошибка сервера (500)',
+        'text': '''
+        Что-то пошло не так.'''
+    }
+    template_name = "flatpages/title_and_text.html"
+    return render(request, template_name, status=500, context=context)

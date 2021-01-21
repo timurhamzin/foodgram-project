@@ -1,0 +1,12 @@
+{% url url_name as url_path %}
+{% if request.path == url_path %}
+    {% define 'nav__item_active' as active_class %}
+{% else %}
+    {% define '' as active_class %}
+{% endif %}
+{% if closing_li %}
+    {% define '</li>' as closing_li_tag %}
+{% else %}
+    {% define '' as closing_li_tag %}
+{% endif %}
+<li class="nav__item {{ active_class }} {{ add_class }}"><a href="{% url url_name %}" class="nav__link link">{{ text }}</a>{{ closing_li_tag }}

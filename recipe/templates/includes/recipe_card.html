@@ -5,7 +5,7 @@
         <img src="{{ recipe.image_url }}" alt="{{ recipe.title }}" class="card__image">
     </a>
     <div class="card__body">
-        <a class="card__title link" href="#" target="_blank">{{ recipe }}</a>
+        <a class="card__title link" href="{% url 'single_page' recipe_id=recipe.id %}" target="_blank">{{ recipe }}</a>
         <ul class="card__items">
             {% for tag in recipe.tag.all %}
                 <li class="card__item"><span class="badge badge_style_{{ tag.badge_color }}">{{ tag }}</span></li>

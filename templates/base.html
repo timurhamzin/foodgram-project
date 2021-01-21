@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ru">
+{% load static %}
+{% load define %}
+{% load user_follows %}
+
+
+<!-- use block with page_title and css_file variables set -->
+{% block head %}
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport"
+              content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>{{ page_title }}</title>
+        {% with "./pages/"|add:css_file|add:".css" as css_path %}
+            <link rel="stylesheet" href="{% static css_path %}">
+        {% endwith %}
+    </head>
+{% endblock %}
+
+<body class="body">
+    {% include "includes/header.html" %}
+
+    {% block main %}
+    {% endblock %}
+
+    {% include "includes/footer.html" %}
+
+    {% block common_js_imports %}
+        <script src="{% static './js/config/config.js' %}"></script>
+        <script src="{% static './js/components/Header.js' %}"></script>
+        <script src="{% static './js/api/Api.js' %}"></script>
+    {% endblock %}
+
+    {% block specific_js_imports %}
+    {% endblock %}
+</body>
+
+</html>

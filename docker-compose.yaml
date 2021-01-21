@@ -7,16 +7,16 @@ services:
   db:
     image: postgres:12.4
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - /var/lib/postgresql/data/
     env_file:
-      - .env
+      - ./.env
   web:
     image: timurhamzin/foodgram
     restart: always
     depends_on:
       - db
     env_file:
-      - .env
+      - ./.env
     volumes:
       - ./static_root:/foodgram/static_root/
       - ./media:/foodgram/media/

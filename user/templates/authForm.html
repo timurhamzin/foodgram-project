@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {% with page_title="Вход на сайт" css_file="form" %}
+        {{ block.super }}
+    {% endwith%}
+{% endblock %}
+
+{% block main %}
+    <main class="main container">
+        <div class="main__header">
+            <h1 class="main__title">{{ page_title }}</h1>
+        </div>
+        <div class="form-container">
+            <form class="form" method="POST">
+                {% csrf_token %}
+                {% include "includes/reg_or_auth_form_input.html" with id="id_username" text="Имя пользователя или e-mail" type="text" name="username"  %}
+                {% include "includes/reg_or_auth_form_input.html" with id="id_password" text="Пароль" type="password" name="password"  %}
+
+                {% dict_get errors '__all__' as err %}
+                {% define err|join:', ' as err %}
+                {% if err %}
+                <div style="border:100">
+                    <span class="form__error" style="padding-bottom: 20px;">{{ err }}</span>
+                </div>
+                {% endif %}
+
+                <div class="form__footer">
+                    <button class="button button_style_blue">Войти</button>
+                    <a class="form__forgot-link" href="{% url 'reset_password' %}">Забыли пароль?</a>
+                </div>
+            </form>
+        </div>
+    </main>
+{% endblock %}
+
+{% block common_js_imports %}
+{% endblock %}
+{% block specific_js_imports %}
+{% endblock %}

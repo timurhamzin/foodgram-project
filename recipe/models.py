@@ -61,6 +61,10 @@ class Ingridient(models.Model):
     part = models.ManyToManyField(Recipe, through='RecipeIngridient')
 
     class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['title', 'measurement_unit'],
+                                    name='title_n_unit_ingredient_unique')
+        ]
         verbose_name = 'Ингридиент'
         verbose_name_plural = 'Ингридиенты'
 

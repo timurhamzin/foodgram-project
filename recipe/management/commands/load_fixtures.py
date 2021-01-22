@@ -16,15 +16,15 @@ class Command(BaseCommand):
         with open(os.path.join(BASE_DIR, 'fixtures', 'ingredients.json')) as f:
             ingredients = json.load(f)
             for ingredient in ingredients:
-                ingredient_obj = Ingridient(
+                ingredient_obj, created = Ingridient.objects.get_or_create(
                     title=ingredient['title'],
                     measurement_unit=ingredient['dimension'])
-                ingredient_obj.save()
-            self.stdout.write(
-                self.style.SUCCESS(
-                    f'Successfully loaded {len(ingredients)} ingredients.'))
+                if created:
+                    msg = f'Successfully loaded {len(ingredients)} ingredients.'
+                    self.stdout.write(self.style.SUCCESS(msg))
 
-    def load_tags(self):
+    @staticmethod
+    def load_tags():
         execute_from_command_line(
             ["manage.py", "loaddata", "fixtures/tag.json"])
 

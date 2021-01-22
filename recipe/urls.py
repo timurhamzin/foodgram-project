@@ -26,4 +26,5 @@ urlpatterns = [
          name='favorite'),
     path('about/', views.FlatPageAbout.as_view(), name='about'),
     path('technology/', views.FlatPageTechnology.as_view(), name='technology'),
+    path('ingredients/', views.ingredients, name='ingredients'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

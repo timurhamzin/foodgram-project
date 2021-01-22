@@ -12,7 +12,8 @@ from django.urls import reverse
 from django.views import View
 from django.views.generic import TemplateView
 
-from recipe.models import (Recipe, Tag, FollowRecipe, ShoppingCart, FollowUser)
+from recipe.models import (Recipe, Tag, FollowRecipe, ShoppingCart, FollowUser,
+                           Ingridient)
 from recipe.templatetags.user_title import user_title
 from recipe.views_helpers.helpers import (
     serve_shopping_list, get_object_or_none, RecipeEditor)
@@ -293,3 +294,14 @@ def delete_recipe(request, recipe_id):
         return HttpResponseForbidden()
     recipe.delete()
     return redirect(reverse('index'))
+
+
+def ingredients(request):
+    query = request.GET.get('query')
+    if query:
+        filtered = Ingridient.objects.filter(title__contains=query)
+    else:
+        filtered = Ingridient.objects.all()
+    response = [{'title': f'{o.title}', 'dimension': o.measurement_unit}
+                for o in filtered]
+    return JsonResponse(response, safe=False)

@@ -36,16 +36,18 @@ function Ingredients() {
     const addIngredient = (e) => {
         if(nameIngredient.value && cantidad.value) {
             const data = getValue();
-            const elem = document.createElement('div');
-            elem.classList.add('form__field-item-ingredient');
-            elem.id = `ing_${cur}`;
-            elem.innerHTML = `<span> ${data.name} ${data.value}${data.units}</span> <span class="form__field-item-delete"></span>
-                             <input id="nameIngredient_${cur}" name="nameIngredient_${cur}" type="hidden" value="${data.name}">
-                             <input id="valueIngredient_${cur}" name="valueIngredient_${cur}" type="hidden" value="${data.value}">
-                             <input id="unitsIngredient_${cur}" name="unitsIngredient_${cur}" type="hidden" value="${data.units}">`;
-            cur++;
-            
-            ingredientsContainer.appendChild(elem);
+            if (typeof data.units !== 'undefined') {
+                const elem = document.createElement('div');
+                elem.classList.add('form__field-item-ingredient');
+                elem.id = `ing_${cur}`;
+                elem.innerHTML = `<span> ${data.name} ${data.value}${data.units}</span> <span class="form__field-item-delete"></span>
+                                 <input id="nameIngredient_${cur}" name="nameIngredient_${cur}" type="hidden" value="${data.name}">
+                                 <input id="valueIngredient_${cur}" name="valueIngredient_${cur}" type="hidden" value="${data.value}">
+                                 <input id="unitsIngredient_${cur}" name="unitsIngredient_${cur}" type="hidden" value="${data.units}">`;
+                cur++;
+
+                ingredientsContainer.appendChild(elem);
+            }
         }
     };
     // удаление элемента
@@ -61,9 +63,9 @@ function Ingredients() {
     // получение данных из инпутов для добавления
     const getValue = (e) => {
         const data = {
-            name: nameIngredient.value.split(", ")[0], // nameIngredient.value,
+            name: nameIngredient.value,
             value: cantidad.value,
-            units: nameIngredient.value.split(", ")[1] // cantidadVal.textContent
+            units: cantidadVal.textContent
         };
         clearValue(nameIngredient);
         clearValue(cantidad);

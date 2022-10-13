@@ -1,5 +1,3 @@
-# foodgram-project can be found at http://130.193.43.193/
-
 # About
 A dynamic web-site to create, purchase, subscribe to and share food recipes. \
 A downloadable text file with amounts of all the ingredients of purchased 

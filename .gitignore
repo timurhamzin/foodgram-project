@@ -135,3 +135,5 @@ media/
 static_root/
 dev/
 prod/
+
+.idea/

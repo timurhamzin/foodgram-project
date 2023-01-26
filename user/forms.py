@@ -4,15 +4,14 @@ from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 from django.contrib.auth import get_user_model
 
-
 User = get_user_model()
 
 
 class SignUpForm(UserCreationForm):
-    first_name = forms.CharField(max_length=30, required=False,
-                                 help_text='Optional.')
-    email = forms.EmailField(max_length=254,
-                             help_text='Required. Inform a valid email address.')
+    first_name = forms.CharField(
+        max_length=30, required=False, help_text='Optional.')
+    email = forms.EmailField(
+        max_length=254, help_text='Required. Inform a valid email address.')
 
     def clean_email(self):
         email = self.cleaned_data.get('email')

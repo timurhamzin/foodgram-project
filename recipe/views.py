@@ -20,8 +20,8 @@ from recipe.views_helpers.helpers import (
 
 User = get_user_model()
 
-CARDS_PER_PAGE = 6
-FOLLOWED_PER_PAGE = 6
+CARDS_PER_PAGE = 3
+FOLLOWED_PER_PAGE = 3
 DEFAULT_TAG_VALUE = 1
 
 

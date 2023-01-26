@@ -6,12 +6,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 load_dotenv(os.path.join(BASE_DIR, '.env'))
 
-SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
+SECRET_KEY = (os.getenv('DJANGO_SECRET_KEY')
+              if os.getenv('DJANGO_SECRET_KEY') else 'CHANGE_THIS!!!')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = bool(int(os.getenv('DEBUG')))
+DEBUG = bool(int(os.getenv('DEBUG'))) if os.getenv('DEBUG') else True
 
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split()
+ALLOWED_HOSTS = (os.getenv('DJANGO_ALLOWED_HOSTS').split()
+                 if os.getenv('DJANGO_ALLOWED_HOSTS') else '*')
 
 INSTALLED_APPS = [
     'django.contrib.admin',
